@@ -18,17 +18,16 @@ namespace template_matching
 	{
 	public:
 		BaseMatcher();
-
-		~BaseMatcher();
+		virtual ~BaseMatcher() override;
 
 		// 判断是否初始化成功
 		bool isInited();
 
-		virtual void drawResult(const cv::Mat& frame, std::vector<template_matching::MatchResult> matchResults);
+		virtual void drawResult(const cv::Mat& frame, std::vector<template_matching::MatchResult> matchResults) override;
 
-		void setMetricsTime(const bool& enabled);
+		void setMetricsTime(const bool& enabled) override;
 
-		bool getMetricsTime();
+		bool getMetricsTime() override;
 
 	protected:
 

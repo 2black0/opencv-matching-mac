@@ -1,51 +1,85 @@
-# 模板匹配
+# Template Matching
 
-- 基于[Fastest Image Pattern Matching](https://github.com/DennisLiu1993/Fastest_Image_Pattern_Matching)
+- Based on [Fastest Image Pattern Matching](https://github.com/DennisLiu1993/Fastest_Image_Pattern_Matching)
 
 ![demo1](asserts/demo1.png)
 
 ![demo2](asserts/demo2.png)
 
-## 改进
+## Improvements
 
-1. 封装为更易用的库
-2. 跨平台适配
+1. Packaged as an easy-to-use library
+2. Cross-platform adaptation
+3. Enhanced macOS Apple Silicon support
+4. Fixed compiler warnings for better code quality
+5. Improved Python demo script with cross-platform compatibility
 
-## 计划
+## Roadmap
 
-- [ ] 优化代码结构
-- [x] 支持python
+- [ ] Optimize code structure
+- [x] Python support
 
-## 编译
+## Build Requirements
 
-### clone代码
+### General Requirements
+- CMake 3.10 or higher
+- C++17 compatible compiler
+- OpenCV 4.x
+- OpenMP (optional, for better performance)
 
-git克隆时同步克隆子模块
+### Platform Specific Requirements
+
+#### Windows
+- Visual Studio 2017/2019/2022 or MinGW
+- OpenCV installed (placed in 3rdParty/opencv or system path)
+
+#### Linux (Ubuntu/Debian example)
+```shell
+sudo apt-get update
+sudo apt-get install libopencv-dev build-essential cmake
+```
+
+#### macOS
+```shell
+# Install Homebrew if not already installed
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+
+# Install dependencies
+brew install opencv cmake libomp
+```
+
+Note: On macOS, OpenMP support requires `libomp` to be installed via Homebrew.
+
+## Compilation
+
+### Clone the code
+
+When cloning with git, also clone submodules:
 
 ```shell
 git clone --recurse-submodules https://github.com/acai66/opencv_matching.git
 ```
 
-### 编译代码
+### Compile the code
 
 #### Windows
 
-使用各种编译cmake的方法(vs2022、vs2019、vs2017、或cmake-gui)编译即可，演示使用vs2022编译，其余工具供参考。
+Use various cmake compilation methods (vs2022, vs2019, vs2017, or cmake-gui) to compile. The demo uses vs2022 compilation, other tools for reference.
 
-编译演示视频：[B站链接](https://www.bilibili.com/video/BV1hu4m1F7D1)
+Compilation demo video: [Bilibili link](https://www.bilibili.com/video/BV1hu4m1F7D1)
 
 #### Linux
 
-演示Ubuntu 22.04下编译，其他发行版类似
+Demonstrates compilation under Ubuntu 22.04, other distributions are similar:
 
-1. 安装依赖和编译工具
+1. Install dependencies and compilation tools
 
 ```shell
 sudo apt-get update
 sudo apt-get install libopencv-dev build-essential cmake
 ```
 
-2. 终端进入到项目根目录，创建build文件夹
+2. Navigate to the project root directory in the terminal and create a build folder
 
 ```shell
 cd opencv_matching
@@ -53,27 +87,69 @@ mkdir build
 cd build
 ```
 
-3. cmake构建
+3. cmake build
 
 ```shell
-cmake  -DCMAKE_INSTALL_PREFIX=./install ..
+cmake -DCMAKE_INSTALL_PREFIX=./install ..
 ```
 
-4. make编译
+4. make compilation
 
 ```shell
 make
 ```
 
-5. 安装
+5. Install
 
 ```shell
 make install
 ```
 
-成功后会在 `build` 目录下生成 `install` 文件夹，里面包含编译好的库(lib)和头文件(include), 以及 `demo` 可执行文件(bin).
+#### macOS
 
-目录结构如下：
+The compilation process on macOS is similar to Linux, but with some differences in library extensions:
+
+1. Install dependencies and compilation tools
+
+```shell
+# Install Homebrew if not already installed
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+
+# Install OpenCV and other dependencies
+brew install opencv cmake libomp
+```
+
+2. Navigate to the project root directory and create a build folder
+
+```shell
+cd opencv_matching
+mkdir build
+cd build
+```
+
+3. cmake build
+
+```shell
+cmake -DCMAKE_INSTALL_PREFIX=./install ..
+```
+
+4. make compilation
+
+```shell
+make
+```
+
+5. Install
+
+```shell
+make install
+```
+
+## Directory Structure
+
+After successful compilation, an `install` folder will be generated in the `build` directory, containing the compiled libraries (lib) and header files (include), as well as the `demo` executable (bin).
+
+### Linux Directory Structure:
 
 ```shell
 install
@@ -87,53 +163,134 @@ install
     └── libtemplatematching_ctype.so
 ```
 
-到 `install/bin` 下运行 `demo` 时，需要确保 `libtemplatematching.so` 在运行目录下，或者将 `libtemplatematching.so` 放到系统库目录下。
+### macOS Directory Structure:
+
+```shell
+install
+├── bin
+│   └── demo
+├── include
+│   ├── matcher.h
+│   └── templatematching.h
+└── lib
+    ├── libtemplatematching.dylib
+    └── libtemplatematching_ctype.dylib
+```
+
+### Windows Directory Structure:
+
+```shell
+install
+├── bin
+│   ├── demo.exe
+│   ├── opencv_world490.dll
+│   ├── templatematching.dll
+│   └── templatematching_ctype.dll
+├── include
+│   ├── matcher.h
+│   └── templatematching.h
+└── lib
+    ├── templatematching.dll
+    └── templatematching_ctype.dll
+```
+
+## Running the Demo
+
+### Linux/macOS
+
+To run `demo` in the `install/bin` directory, ensure that the library is in the run directory or in the system library path:
 
 ```shell
 cd install/bin/
+# For Linux:
 cp ../lib/libtemplatematching.so ./
+# For macOS:
+cp ../lib/libtemplatematching.dylib ./
 ./demo
 ```
 
+### Windows
 
+On Windows, the required DLLs are automatically copied to the bin directory during installation:
 
-### 注意事项
+```shell
+cd install/bin/
+demo.exe
+```
 
-- 作者机器上不同项目使用的opencv版本不同，所以没有把opencv添加到系统环境变量中，opencv放进了3rdParty文件夹下，目录结构参考如下：
+## Usage
 
-  ![windows_opencv_path](asserts/opencv_path.png)
-
-- 如需修改opencv路径，可能需要修改如下信息，具体参考 `CMakeLists.txt` 和 `matcher/CMakeLists.txt` 文件：
-
-  `CMakeLists.txt`
-
-  ```cmake
-  if(CMAKE_HOST_SYSTEM_NAME MATCHES "Windows")
-    set(OpenCV_DIR ${PROJECT_SOURCE_DIR}/3rdParty/opencv)
-  endif()
-  ```
-
-  `matcher/CMakeLists.txt`
-
-  ```cmake
-  if(WIN32)
-  install(FILES 
-    ${PROJECT_SOURCE_DIR}/3rdParty/opencv/x64/vc16/bin/opencv_world490.dll
-    TYPE BIN 
-    DESTINATION ${CMAKE_INSTALL_BINDIR})
-  else()
-  ```
-
-## 使用
-
-将编译的库集成到其他项目中
-
-编译完成后，可以在安装目录下找到 `templatematching.dll` 和 `templatematching_ctype.dll`
+Integrate the compiled library into other projects.
 
 ### C++
 
-c++编译时只需要引入头文件即可，dll是在运行时加载的，只需要 `templatematching.dll`，详细调用参考 `demo.cpp`
+For C++ compilation, just include the header files. The library is loaded at runtime:
 
-### python
+- Linux: `libtemplatematching.so`
+- macOS: `libtemplatematching.dylib` 
+- Windows: `templatematching.dll`
 
-python使用时需要将 `templatematching.dll` 和 `templatematching_ctype.dll` 放进运行目录，演示代码参考 `py_demo.py`
+Refer to `demo.cpp` for detailed usage.
+
+### Python
+
+For Python usage, place the appropriate library files in the run directory. Refer to `py_demo.py` for demo code.
+
+The updated `py_demo.py` script now includes:
+
+1. **Cross-platform library loading**: Automatically detects the operating system and loads the appropriate library file
+2. **Improved error handling**: Better error messages and handling for common issues
+3. **Test image generation**: Creates test images when template files are not found
+4. **Enhanced visualization**: Clear display of matching results with scores and positions
+
+To run the Python demo:
+
+```shell
+cd install/bin/
+# Copy the required libraries
+cp ../lib/libtemplatematching.dylib ./  # macOS
+cp ../lib/libtemplatematching_ctype.dylib ./  # macOS
+
+# For Linux, use .so extensions instead
+# For Windows, the DLLs should already be in the directory
+
+python py_demo.py
+```
+
+The Python demo will:
+- Create test template and target images if `image.png` is not found
+- Set the template and perform matching
+- Display results with bounding boxes and scores
+- Save the result as `demo_result.png`
+
+## Changes for macOS Apple Silicon Support
+
+The following changes were made to ensure smooth operation on macOS Apple Silicon (M1/M2/M3) systems:
+
+1. **Fixed Dynamic Library Loading**:
+   - Updated `demo.cpp` to correctly load `.dylib` files on macOS instead of `.so` files
+   - Added platform-specific library loading code that detects Apple Silicon and loads the appropriate library extension
+
+2. **CMake Configuration Updates**:
+   - Modified CMakeLists.txt to properly handle library extensions on macOS
+   - Added proper linking for OpenMP on macOS with Apple Silicon
+
+3. **Fixed Compiler Warnings**:
+   - Resolved abstract class destructor warnings by adding virtual destructors to base classes
+   - This ensures proper cleanup when deleting objects through base class pointers
+
+4. **Memory Management Improvements**:
+   - Updated virtual destructors in the inheritance hierarchy to prevent memory leaks
+   - Matcher, BaseMatcher, and PatternMatcher classes now have proper virtual destructors
+
+5. **Cross-Platform Compatibility**:
+   - Maintained compatibility with existing Windows and Linux builds
+   - Ensured that the codebase works consistently across all platforms
+
+6. **Python Demo Improvements**:
+   - Updated `py_demo.py` with cross-platform library path detection
+   - Added better error handling and user feedback
+   - Included test image generation for easier testing
+   - Improved result visualization
+
+These changes ensure that the template matching library builds and runs smoothly on macOS Apple Silicon systems while maintaining compatibility with other platforms.

@@ -1,4 +1,4 @@
-﻿cmake_minimum_required(VERSION 3.9 FATAL_ERROR)
+﻿cmake_minimum_required(VERSION 3.10 FATAL_ERROR)
 
 project(matching VERSION 1.0.0)
 
@@ -12,12 +12,23 @@ link_directories(${OPENCV_LIBRARY_DIRS})
 
 set(CMAKE_CXX_STANDARD 17)
 
-find_package( OpenMP REQUIRED)
+# Handle OpenMP for macOS with Homebrew
+if(APPLE)
+    if(EXISTS "/opt/homebrew/opt/libomp")
+        set(OpenMP_C_FLAGS "-Xpreprocessor -fopenmp -I/opt/homebrew/opt/libomp/include")
+        set(OpenMP_CXX_FLAGS "-Xpreprocessor -fopenmp -I/opt/homebrew/opt/libomp/include")
+        set(OpenMP_C_LIB_NAMES "omp")
+        set(OpenMP_CXX_LIB_NAMES "omp")
+        set(OpenMP_omp_LIBRARY "/opt/homebrew/opt/libomp/lib/libomp.dylib")
+    endif()
+endif()
+
+find_package(OpenMP REQUIRED)
 if(OPENMP_FOUND)
-message("OPENMP FOUND")
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS}")
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
-set(CMAKE_EXE_LINKER_FLAGS"${CMAKE_EXE_LINKER_FLAGS}${OpenMP_EXE_LINKER_FLAGS}")
+    message("OPENMP FOUND")
+    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS}")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
+    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${OpenMP_EXE_LINKER_FLAGS}")
 endif()
 
 if (CMAKE_HOST_SYSTEM_PROCESSOR MATCHES "aarch64")

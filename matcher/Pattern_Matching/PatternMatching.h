@@ -220,7 +220,7 @@ namespace template_matching
 	{
 	public:
 		PatternMatcher(const template_matching::MatcherParam& param);
-		~PatternMatcher();
+		virtual ~PatternMatcher() override;
 		virtual int match(const cv::Mat & frame, std::vector<template_matching::MatchResult> &matchResults) override;
 
 		virtual int setTemplate(const cv::Mat& templateImage) override;

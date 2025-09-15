@@ -10,7 +10,7 @@ namespace template_matching
 	class LIB_API Matcher
 	{
 	public:
-		~Matcher() {  }
+		virtual ~Matcher() = default;
 
 		/** 匹配
 		@param frame 输入图像.

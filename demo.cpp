@@ -79,9 +79,16 @@ int main(int argc, char** argv)
 	InitMD myGetMatcher;
 	myGetMatcher = (InitMD)GetProcAddress(handle, "GetMatcher");
 #else
-	// linux 动态加载dll
+	// linux/macOS 动态加载dll
 	void* handle = nullptr;
-	handle = dlopen("libtemplatematching.so", RTLD_LAZY); 
+	
+	// Try different library names based on the platform
+	#ifdef __APPLE__
+	handle = dlopen("libtemplatematching.dylib", RTLD_LAZY);
+	#else
+	handle = dlopen("libtemplatematching.so", RTLD_LAZY);
+	#endif
+	
 	if (handle == nullptr)
 	{
 		char *dlopenError = dlerror();
@@ -89,7 +96,7 @@ int main(int argc, char** argv)
 		{
 			std::cerr << "Error : " << dlopenError << std::endl;
 		}
-		std::cerr << "Error : failed to load libtemplatematching.so!" << std::endl;
+		std::cerr << "Error : failed to load libtemplatematching library!" << std::endl;
 		return -2;
 	}
 
