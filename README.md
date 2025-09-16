@@ -209,6 +209,14 @@ cp ../lib/libtemplatematching.dylib ./
 ./demo
 ```
 
+Alternatively, update the library path without copying the shared objects:
+
+```shell
+cd ~/Documents/GitHub/opencv-matching/build/install/bin
+export LD_LIBRARY_PATH=$PWD:$LD_LIBRARY_PATH
+./demo
+```
+
 ### Windows
 
 On Windows, the required DLLs are automatically copied to the bin directory during installation:
